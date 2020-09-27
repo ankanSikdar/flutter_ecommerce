@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:google_fonts/google_fonts.dart';
 
 void main() {
   runApp(MyApp());
@@ -15,6 +16,7 @@ class MyApp extends StatelessWidget {
         accentColor: Colors.grey[700],
         brightness: Brightness.dark,
         visualDensity: VisualDensity.adaptivePlatformDensity,
+        fontFamily: GoogleFonts.notoSans().fontFamily,
         textTheme: TextTheme(
           headline5: TextStyle(fontSize: 72, fontWeight: FontWeight.bold),
           headline6: TextStyle(fontSize: 36, fontStyle: FontStyle.italic),
@@ -35,11 +37,11 @@ class Home extends StatelessWidget {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text('Welcome'),
+        title: Text('Welcome Ankan'),
       ),
       body: Container(
         child: Text(
-          'This is good',
+          '₹ 799.99 Rupees only',
           style: Theme.of(context).textTheme.bodyText2,
         ),
       ),
