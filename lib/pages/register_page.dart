@@ -13,6 +13,7 @@ class RegisterPage extends StatefulWidget {
 class _RegisterPageState extends State<RegisterPage> {
   final _formKey = GlobalKey<FormState>();
   String _username, _email, _password;
+  bool _obscureText = true;
 
   void _onSubmit() {
     final form = _formKey.currentState;
@@ -89,12 +90,22 @@ class _RegisterPageState extends State<RegisterPage> {
     return Padding(
       padding: const EdgeInsets.only(top: 10),
       child: TextFormField(
-        obscureText: true,
+        obscureText: _obscureText,
         decoration: InputDecoration(
           labelText: 'Password',
           icon: FaIcon(FontAwesomeIcons.key),
           border: OutlineInputBorder(),
           hintText: 'Create a password',
+          suffixIcon: GestureDetector(
+            child: Icon(
+              _obscureText ? FontAwesomeIcons.eye : FontAwesomeIcons.eyeSlash,
+            ),
+            onTap: () {
+              setState(() {
+                _obscureText = !_obscureText;
+              });
+            },
+          ),
         ),
         onSaved: (newValue) => _password = newValue,
         validator: (value) {
