@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
+import 'package:email_validator/email_validator.dart';
 
 class RegisterPage extends StatefulWidget {
   @override
@@ -7,6 +8,20 @@ class RegisterPage extends StatefulWidget {
 }
 
 class _RegisterPageState extends State<RegisterPage> {
+  final _formKey = GlobalKey<FormState>();
+  String _username, _email, _password;
+
+  void _onSubmit() {
+    final form = _formKey.currentState;
+    if (!form.validate()) {
+      return;
+    }
+    form.save();
+    print(_username);
+    print(_email);
+    print(_password);
+  }
+
   Widget _showTitle() {
     return Text(
       'Register',
@@ -25,6 +40,19 @@ class _RegisterPageState extends State<RegisterPage> {
           hintText: 'Enter username, min length 6',
         ),
         keyboardType: TextInputType.text,
+        onSaved: (newValue) => _username = newValue,
+        validator: (value) {
+          if (value.isEmpty) {
+            return 'Username must be provided';
+          }
+          if (value.length < 6) {
+            return 'Username must be atleast 6 characters';
+          }
+          if (value.length > 20) {
+            return 'Username cannot be greater than 20 characters';
+          }
+          return null;
+        },
       ),
     );
   }
@@ -40,6 +68,16 @@ class _RegisterPageState extends State<RegisterPage> {
           hintText: 'Enter your email id',
         ),
         keyboardType: TextInputType.emailAddress,
+        onSaved: (newValue) => _email = newValue,
+        validator: (value) {
+          if (value.isEmpty) {
+            return 'Email must be provided';
+          }
+          if (!EmailValidator.validate(value)) {
+            return 'Enter a valid email';
+          }
+          return null;
+        },
       ),
     );
   }
@@ -55,6 +93,16 @@ class _RegisterPageState extends State<RegisterPage> {
           border: OutlineInputBorder(),
           hintText: 'Create a password',
         ),
+        onSaved: (newValue) => _password = newValue,
+        validator: (value) {
+          if (value.isEmpty) {
+            return 'Password must be provided';
+          }
+          if (value.length < 6) {
+            return 'Password must be atleast 6 characters';
+          }
+          return null;
+        },
       ),
     );
   }
@@ -65,7 +113,7 @@ class _RegisterPageState extends State<RegisterPage> {
       child: Column(
         children: [
           RaisedButton(
-            onPressed: () {},
+            onPressed: _onSubmit,
             elevation: 8,
             padding: EdgeInsets.symmetric(vertical: 10, horizontal: 20),
             shape:
@@ -100,6 +148,7 @@ class _RegisterPageState extends State<RegisterPage> {
         padding: EdgeInsets.symmetric(horizontal: 20),
         child: SingleChildScrollView(
           child: Form(
+            key: _formKey,
             child: Column(
               children: [
                 _showTitle(),
