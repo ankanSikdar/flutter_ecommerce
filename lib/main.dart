@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_ecommerce/pages/register_page.dart';
 import 'package:google_fonts/google_fonts.dart';
-import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 
 void main() {
   runApp(MyApp());
@@ -24,32 +24,7 @@ class MyApp extends StatelessWidget {
           bodyText2: TextStyle(fontSize: 18),
         ),
       ),
-      home: Home(),
-    );
-  }
-}
-
-class Home extends StatelessWidget {
-  const Home({
-    Key key,
-  }) : super(key: key);
-
-  @override
-  Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: AppBar(
-        title: Text('Welcome Ankan'),
-      ),
-      body: Container(
-        child: Text(
-          '₹ 799.99 Rupees only',
-          style: Theme.of(context).textTheme.bodyText2,
-        ),
-      ),
-      floatingActionButton: FloatingActionButton(
-        onPressed: () {},
-        child: FaIcon(FontAwesomeIcons.rupeeSign),
-      ),
+      home: RegisterPage(),
     );
   }
 }
