@@ -1,18 +1,18 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_ecommerce/pages/login_page.dart';
+import 'package:flutter_ecommerce/pages/register_page.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:email_validator/email_validator.dart';
 
-class RegisterPage extends StatefulWidget {
-  static const routeName = '/register';
+class LoginPage extends StatefulWidget {
+  static const routeName = '/login';
 
   @override
-  _RegisterPageState createState() => _RegisterPageState();
+  _LoginPageState createState() => _LoginPageState();
 }
 
-class _RegisterPageState extends State<RegisterPage> {
+class _LoginPageState extends State<LoginPage> {
   final _formKey = GlobalKey<FormState>();
-  String _username, _email, _password;
+  String _email, _password;
 
   void _onSubmit() {
     final form = _formKey.currentState;
@@ -20,49 +20,20 @@ class _RegisterPageState extends State<RegisterPage> {
       return;
     }
     form.save();
-    print(_username);
     print(_email);
     print(_password);
   }
 
   Widget _showTitle() {
     return Text(
-      'Register',
+      'Login',
       style: Theme.of(context).textTheme.headline5,
-    );
-  }
-
-  Widget _showUsernameInput() {
-    return Padding(
-      padding: const EdgeInsets.only(top: 20),
-      child: TextFormField(
-        decoration: InputDecoration(
-          labelText: 'Username',
-          icon: FaIcon(FontAwesomeIcons.userAlt),
-          border: OutlineInputBorder(),
-          hintText: 'Enter username, min length 6',
-        ),
-        keyboardType: TextInputType.text,
-        onSaved: (newValue) => _username = newValue,
-        validator: (value) {
-          if (value.isEmpty) {
-            return 'Username must be provided';
-          }
-          if (value.length < 6) {
-            return 'Username must be atleast 6 characters';
-          }
-          if (value.length > 20) {
-            return 'Username cannot be greater than 20 characters';
-          }
-          return null;
-        },
-      ),
     );
   }
 
   Widget _showEmailInput() {
     return Padding(
-      padding: const EdgeInsets.only(top: 10),
+      padding: const EdgeInsets.only(top: 20),
       child: TextFormField(
         decoration: InputDecoration(
           labelText: 'Email',
@@ -122,7 +93,7 @@ class _RegisterPageState extends State<RegisterPage> {
             shape:
                 RoundedRectangleBorder(borderRadius: BorderRadius.circular(10)),
             child: Text(
-              'SignUp',
+              'Login',
               style: Theme.of(context)
                   .textTheme
                   .bodyText2
@@ -132,9 +103,9 @@ class _RegisterPageState extends State<RegisterPage> {
           ),
           FlatButton(
             onPressed: () {
-              Navigator.pushReplacementNamed(context, LoginPage.routeName);
+              Navigator.pushReplacementNamed(context, RegisterPage.routeName);
             },
-            child: Text('Existing User? Login',
+            child: Text('New User? Register',
                 style: Theme.of(context).textTheme.bodyText2),
           )
         ],
@@ -146,7 +117,7 @@ class _RegisterPageState extends State<RegisterPage> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text('Register'),
+        title: Text('Login'),
         centerTitle: true,
       ),
       body: Container(
@@ -158,7 +129,6 @@ class _RegisterPageState extends State<RegisterPage> {
             child: Column(
               children: [
                 _showTitle(),
-                _showUsernameInput(),
                 _showEmailInput(),
                 _showPasswordInput(),
                 _showFormActionsInput(),
