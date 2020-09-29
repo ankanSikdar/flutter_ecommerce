@@ -42,10 +42,10 @@ class _RegisterPageState extends State<RegisterPage> {
     final responseData = json.decode(response.body);
     setState(() {
       _isLoading = false;
-      final errorMessage = responseData['message'][0]['messages'][0]['message'];
-      _showErrorSnack(errorMessage);
     });
     if (response.statusCode != 200) {
+      final errorMessage = responseData['message'][0]['messages'][0]['message'];
+      _showErrorSnack(errorMessage);
     } else {
       _showSuccessSnack();
       _redirectUser();
