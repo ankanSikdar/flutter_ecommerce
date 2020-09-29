@@ -1,5 +1,6 @@
 import 'dart:async';
 import 'dart:convert';
+import 'dart:isolate';
 
 import 'package:flutter/material.dart';
 import 'package:flutter_ecommerce/pages/login_page.dart';
@@ -41,10 +42,15 @@ class _RegisterPageState extends State<RegisterPage> {
     final responseData = json.decode(response.body);
     setState(() {
       _isLoading = false;
+      final errorMessage = responseData['message'][0]['messages'][0]['message'];
+      _showErrorSnack(errorMessage);
     });
-    _showSuccessSnack();
-    _redirectUser();
-    print('Data: $responseData');
+    if (response.statusCode != 200) {
+    } else {
+      _showSuccessSnack();
+      _redirectUser();
+      print('Data: $responseData');
+    }
   }
 
   void _showSuccessSnack() {
@@ -53,9 +59,21 @@ class _RegisterPageState extends State<RegisterPage> {
         'User $_username successfully created!',
         style: TextStyle(color: Colors.green),
       ),
+      backgroundColor: Theme.of(context).primaryColorDark,
     );
     _scaffoldKey.currentState.showSnackBar(snackBar);
     _formKey.currentState.reset();
+  }
+
+  void _showErrorSnack(String message) {
+    SnackBar snackBar = SnackBar(
+      content: Text(
+        'ERROR: $message',
+        style: TextStyle(color: Theme.of(context).errorColor),
+      ),
+      backgroundColor: Theme.of(context).primaryColorDark,
+    );
+    _scaffoldKey.currentState.showSnackBar(snackBar);
   }
 
   void _redirectUser() {
