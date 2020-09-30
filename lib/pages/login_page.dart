@@ -7,6 +7,7 @@ import 'package:flutter_ecommerce/pages/register_page.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:email_validator/email_validator.dart';
 import 'package:http/http.dart' as http;
+import 'package:shared_preferences/shared_preferences.dart';
 
 class LoginPage extends StatefulWidget {
   static const routeName = '/login';
@@ -45,11 +46,21 @@ class _LoginPageState extends State<LoginPage> {
       final errorMessage = responseData['message'][0]['messages'][0]['message'];
       _showErrorSnack(errorMessage);
     } else {
+      _storeUserData(responseData);
       final username = responseData['user']['username'];
       _showSuccessSnack(username);
       _redirectUser();
       print('Data: $responseData');
     }
+  }
+
+  Future<void> _storeUserData(Map responseData) async {
+    final pref = await SharedPreferences.getInstance();
+
+    Map<String, dynamic> user = responseData['user'];
+    user.putIfAbsent('jwt', () => responseData['jwt']);
+
+    pref.setString('user', json.encode(user));
   }
 
   void _showSuccessSnack(String username) {

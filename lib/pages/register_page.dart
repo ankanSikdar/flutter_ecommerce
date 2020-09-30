@@ -8,6 +8,7 @@ import 'package:flutter_ecommerce/pages/products_page.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:email_validator/email_validator.dart';
 import 'package:http/http.dart' as http;
+import 'package:shared_preferences/shared_preferences.dart';
 
 class RegisterPage extends StatefulWidget {
   static const routeName = '/register';
@@ -47,10 +48,20 @@ class _RegisterPageState extends State<RegisterPage> {
       final errorMessage = responseData['message'][0]['messages'][0]['message'];
       _showErrorSnack(errorMessage);
     } else {
+      _storeUserData(responseData);
       _showSuccessSnack();
       _redirectUser();
       print('Data: $responseData');
     }
+  }
+
+  Future<void> _storeUserData(Map responseData) async {
+    final pref = await SharedPreferences.getInstance();
+
+    Map<String, dynamic> user = responseData['user'];
+    user.putIfAbsent('jwt', () => responseData['jwt']);
+
+    pref.setString('user', json.encode(user));
   }
 
   void _showSuccessSnack() {

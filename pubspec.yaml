@@ -28,6 +28,7 @@ dependencies:
   font_awesome_flutter: ^8.8.1
   email_validator: ^1.0.5
   http: ^0.12.2
+  shared_preferences: ^0.5.12
 
 dev_dependencies:
   flutter_test:
