@@ -20,19 +20,34 @@ class _ProductsPageState extends State<ProductsPage> {
     widget.onInit();
   }
 
+  final _appBar = PreferredSize(
+    preferredSize: Size.fromHeight(60.0),
+    child: StoreConnector<AppState, AppState>(
+      converter: (store) => store.state,
+      builder: (context, state) {
+        return AppBar(
+          centerTitle: true,
+          title: state.user != null ? Text(state.user.username) : Text(''),
+          leading: IconButton(
+            icon: Icon(Icons.store),
+            onPressed: () {},
+          ),
+          actions: [
+            IconButton(
+              icon: Icon(Icons.exit_to_app),
+              onPressed: () {},
+            )
+          ],
+        );
+      },
+    ),
+  );
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(
-        title: Text('Products'),
-        centerTitle: true,
-      ),
-      body: StoreConnector<AppState, AppState>(
-        converter: (store) => store.state,
-        builder: (context, state) {
-          return state.user != null ? Text(state.user.username) : Text('');
-        },
-      ),
+      appBar: _appBar,
+      body: Text('Products Page'),
     );
   }
 }
