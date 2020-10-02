@@ -4,8 +4,8 @@ import 'dart:convert';
 import 'package:flutter/material.dart';
 import 'package:flutter_ecommerce/pages/products_page.dart';
 import 'package:flutter_ecommerce/pages/register_page.dart';
-import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:email_validator/email_validator.dart';
+import 'package:flutter_icons/flutter_icons.dart';
 import 'package:http/http.dart' as http;
 import 'package:shared_preferences/shared_preferences.dart';
 
@@ -105,7 +105,7 @@ class _LoginPageState extends State<LoginPage> {
       child: TextFormField(
         decoration: InputDecoration(
           labelText: 'Email',
-          icon: FaIcon(FontAwesomeIcons.solidEnvelope),
+          icon: Icon(FlutterIcons.email_ent),
           border: OutlineInputBorder(),
           hintText: 'Enter your email id',
         ),
@@ -131,12 +131,14 @@ class _LoginPageState extends State<LoginPage> {
         obscureText: _obscureText,
         decoration: InputDecoration(
           labelText: 'Password',
-          icon: FaIcon(FontAwesomeIcons.key),
+          icon: Icon(FlutterIcons.key_ent),
           border: OutlineInputBorder(),
           hintText: 'Create a password',
           suffixIcon: GestureDetector(
             child: Icon(
-              _obscureText ? FontAwesomeIcons.eye : FontAwesomeIcons.eyeSlash,
+              _obscureText
+                  ? FlutterIcons.eye_ent
+                  : FlutterIcons.eye_with_line_ent,
             ),
             onTap: () {
               setState(() {

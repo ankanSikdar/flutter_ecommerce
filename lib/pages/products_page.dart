@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_ecommerce/models/app_state.dart';
 import 'package:flutter_redux/flutter_redux.dart';
+import 'package:flutter_icons/flutter_icons.dart';
 
 class ProductsPage extends StatefulWidget {
   static const routeName = '/products';
@@ -29,12 +30,12 @@ class _ProductsPageState extends State<ProductsPage> {
           centerTitle: true,
           title: state.user != null ? Text(state.user.username) : Text(''),
           leading: IconButton(
-            icon: Icon(Icons.store),
+            icon: Icon(FlutterIcons.shop_ent),
             onPressed: () {},
           ),
           actions: [
             IconButton(
-              icon: Icon(Icons.exit_to_app),
+              icon: Icon(FlutterIcons.log_out_ent),
               onPressed: () {},
             )
           ],
