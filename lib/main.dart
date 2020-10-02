@@ -3,6 +3,7 @@ import 'package:flutter_ecommerce/models/app_state.dart';
 import 'package:flutter_ecommerce/pages/login_page.dart';
 import 'package:flutter_ecommerce/pages/products_page.dart';
 import 'package:flutter_ecommerce/pages/register_page.dart';
+import 'package:flutter_ecommerce/redux/actions.dart';
 import 'package:flutter_ecommerce/redux/reducers.dart';
 import 'package:flutter_redux/flutter_redux.dart';
 import 'package:google_fonts/google_fonts.dart';
@@ -42,7 +43,12 @@ class MyApp extends StatelessWidget {
         routes: {
           RegisterPage.routeName: (context) => RegisterPage(),
           LoginPage.routeName: (context) => LoginPage(),
-          ProductsPage.routeName: (context) => ProductsPage(),
+          ProductsPage.routeName: (context) => ProductsPage(
+                onInit: () {
+                  // dispatch an action (getUserAction) to get user data
+                  StoreProvider.of<AppState>(context).dispatch(getUserAction);
+                },
+              ),
         },
       ),
     );
