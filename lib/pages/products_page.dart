@@ -54,12 +54,12 @@ class _ProductsPageState extends State<ProductsPage> {
           return GridView.builder(
             gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
               crossAxisCount: 2,
-              childAspectRatio: 3 / 1,
+              childAspectRatio: 2 / 3,
               crossAxisSpacing: 5,
               mainAxisSpacing: 5,
             ),
             itemBuilder: (context, index) {
-              return Text(state.products[index]['name']);
+              return Text(state.products[index].name);
             },
             itemCount: state.products.length,
           );

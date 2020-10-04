@@ -1,4 +1,5 @@
 import 'package:flutter_ecommerce/models/app_state.dart';
+import 'package:flutter_ecommerce/models/product.dart';
 import 'package:flutter_ecommerce/models/user.dart';
 import 'package:flutter_ecommerce/redux/actions.dart';
 
@@ -20,7 +21,7 @@ userReducer(User user, dynamic action) {
   return user;
 }
 
-productsReducer(List<dynamic> products, dynamic action) {
+productsReducer(List<Product> products, dynamic action) {
   if (action is GetProductsAction) {
     return action.products;
   }
