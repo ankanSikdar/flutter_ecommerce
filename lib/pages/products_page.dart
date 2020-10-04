@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_ecommerce/models/app_state.dart';
+import 'package:flutter_ecommerce/widgets/product_item.dart';
 import 'package:flutter_redux/flutter_redux.dart';
 import 'package:flutter_icons/flutter_icons.dart';
 
@@ -54,12 +55,12 @@ class _ProductsPageState extends State<ProductsPage> {
           return GridView.builder(
             gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
               crossAxisCount: 2,
-              childAspectRatio: 2 / 3,
+              childAspectRatio: 1,
               crossAxisSpacing: 5,
               mainAxisSpacing: 5,
             ),
             itemBuilder: (context, index) {
-              return Text(state.products[index].name);
+              return ProductItem(state.products[index]);
             },
             itemCount: state.products.length,
           );
