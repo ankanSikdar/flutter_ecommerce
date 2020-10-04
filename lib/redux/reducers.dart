@@ -8,6 +8,7 @@ AppState appReducer(AppState state, dynamic action) {
       state.user,
       action,
     ),
+    products: productsReducer(state.products, action),
   );
 }
 
@@ -17,4 +18,11 @@ userReducer(User user, dynamic action) {
     return action.user;
   }
   return user;
+}
+
+productsReducer(List<dynamic> products, dynamic action) {
+  if (action is GetProductsAction) {
+    return action.products;
+  }
+  return products;
 }

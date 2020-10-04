@@ -5,6 +5,7 @@ import 'package:flutter_ecommerce/models/user.dart';
 import 'package:redux/redux.dart';
 import 'package:redux_thunk/redux_thunk.dart';
 import 'package:shared_preferences/shared_preferences.dart';
+import 'package:http/http.dart' as http;
 
 /* User Actions */
 
@@ -24,5 +25,23 @@ class GetUserAction {
 
   User get user {
     return _user;
+  }
+}
+
+/* Product Actions */
+
+ThunkAction<AppState> getProductsAction = (Store<AppState> store) async {
+  http.Response response = await http.get('http://192.168.1.5:1337/products');
+  final List<dynamic> responseData = json.decode(response.body);
+  store.dispatch(GetProductsAction(responseData));
+};
+
+class GetProductsAction {
+  final List<dynamic> _products;
+
+  GetProductsAction(this._products);
+
+  List<dynamic> get products {
+    return _products;
   }
 }
