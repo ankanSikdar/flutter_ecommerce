@@ -22,9 +22,12 @@ class ProductItem extends StatelessWidget {
         );
       },
       child: GridTile(
-        child: Image(
-          image: NetworkImage(url),
-          fit: BoxFit.cover,
+        child: Hero(
+          tag: url,
+          child: Image(
+            image: NetworkImage(url),
+            fit: BoxFit.cover,
+          ),
         ),
         footer: GridTileBar(
           backgroundColor: Colors.black45,

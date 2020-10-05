@@ -18,8 +18,11 @@ class ProductDetailsPage extends StatelessWidget {
           children: [
             Container(
               alignment: Alignment.center,
-              child: Image(
-                image: NetworkImage(url),
+              child: Hero(
+                tag: url,
+                child: Image(
+                  image: NetworkImage(url),
+                ),
               ),
               width: MediaQuery.of(context).size.width,
             ),
