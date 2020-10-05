@@ -47,7 +47,7 @@ class MyApp extends StatelessWidget {
             bodyText2: TextStyle(fontSize: 18),
           ),
         ),
-        home: RegisterPage(),
+        initialRoute: ProductsPage.routeName,
         routes: {
           RegisterPage.routeName: (context) => RegisterPage(),
           LoginPage.routeName: (context) => LoginPage(),
