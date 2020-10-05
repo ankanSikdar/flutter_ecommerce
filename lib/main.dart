@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_ecommerce/models/app_state.dart';
 import 'package:flutter_ecommerce/pages/login_page.dart';
+import 'package:flutter_ecommerce/pages/product_details_page.dart';
 import 'package:flutter_ecommerce/pages/products_page.dart';
 import 'package:flutter_ecommerce/pages/register_page.dart';
 import 'package:flutter_ecommerce/redux/actions.dart';
@@ -58,6 +59,7 @@ class MyApp extends StatelessWidget {
                       .dispatch(getProductsAction);
                 },
               ),
+          ProductDetailsPage.routeName: (context) => ProductDetailsPage(),
         },
       ),
     );
