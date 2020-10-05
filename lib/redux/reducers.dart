@@ -17,6 +17,8 @@ userReducer(User user, dynamic action) {
   if (action is GetUserAction) {
     /* return user from action */
     return action.user;
+  } else if (action is LogOutAction) {
+    return action.user;
   }
   return user;
 }
