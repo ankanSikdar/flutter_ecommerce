@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:flutter_ecommerce/models/app_state.dart';
 import 'package:flutter_ecommerce/pages/login_page.dart';
 import 'package:flutter_ecommerce/pages/products_page.dart';
@@ -11,10 +12,14 @@ import 'package:redux/redux.dart';
 import 'package:redux_logging/redux_logging.dart';
 import 'package:redux_thunk/redux_thunk.dart';
 
-void main() {
+void main() async {
   final store = Store<AppState>(appReducer,
       initialState: AppState.initial(),
       middleware: [thunkMiddleware, LoggingMiddleware.printer()]);
+
+  WidgetsFlutterBinding.ensureInitialized();
+  SystemChrome.setPreferredOrientations(
+      [DeviceOrientation.portraitUp, DeviceOrientation.portraitDown]);
   runApp(MyApp(store: store));
 }
 
