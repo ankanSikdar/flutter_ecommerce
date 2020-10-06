@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_ecommerce/models/app_state.dart';
+import 'package:flutter_ecommerce/pages/cart_page.dart';
 import 'package:flutter_ecommerce/pages/login_page.dart';
 import 'package:flutter_ecommerce/widgets/product_item.dart';
 import 'package:flutter_redux/flutter_redux.dart';
@@ -37,7 +38,9 @@ class _ProductsPageState extends State<ProductsPage> {
               ? Text('')
               : IconButton(
                   icon: Icon(FlutterIcons.shop_ent),
-                  onPressed: () {},
+                  onPressed: () {
+                    Navigator.pushNamed(context, CartPage.routeName);
+                  },
                 ),
           actions: [
             StoreConnector<AppState, VoidCallback>(
