@@ -67,3 +67,32 @@ class GetProductsAction {
     return _products;
   }
 }
+
+/* Cart Product Actions */
+
+ThunkAction<AppState> toggleCartProductAction(Product cartProduct) {
+  return (Store<AppState> store) {
+    final List<Product> cartProducts = store.state.cartProducts;
+    final int index =
+        cartProducts.indexWhere((element) => element.id == cartProduct.id);
+    List<Product> updatedCart = List.from(cartProducts);
+    if (index < 0) {
+      // Item not in cart
+      updatedCart.add(cartProduct);
+    } else {
+      // Item in cart already
+      updatedCart.removeAt(index);
+    }
+    store.dispatch(ToggleCartProductAction(updatedCart));
+  };
+}
+
+class ToggleCartProductAction {
+  final List<Product> _cartProducts;
+
+  ToggleCartProductAction(this._cartProducts);
+
+  List<Product> get cartProducts {
+    return _cartProducts;
+  }
+}

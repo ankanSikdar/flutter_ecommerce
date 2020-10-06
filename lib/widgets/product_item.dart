@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_ecommerce/models/app_state.dart';
 import 'package:flutter_ecommerce/models/product.dart';
 import 'package:flutter_ecommerce/pages/product_details_page.dart';
+import 'package:flutter_ecommerce/redux/actions.dart';
 import 'package:flutter_icons/flutter_icons.dart';
 import 'package:flutter_redux/flutter_redux.dart';
 
@@ -45,9 +46,15 @@ class ProductItem extends StatelessWidget {
               if (state.user == null) {
                 return Text('');
               }
+              bool inCart = state.cartProducts.contains(item);
               return IconButton(
-                icon: Icon(FlutterIcons.cart_plus_faw),
-                onPressed: () {},
+                icon: Icon(inCart
+                    ? FlutterIcons.cart_remove_mco
+                    : FlutterIcons.cart_plus_mco),
+                onPressed: () {
+                  StoreProvider.of<AppState>(context)
+                      .dispatch(toggleCartProductAction(item));
+                },
               );
             },
           ),
