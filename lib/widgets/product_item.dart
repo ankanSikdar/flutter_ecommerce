@@ -48,9 +48,10 @@ class ProductItem extends StatelessWidget {
               }
               bool inCart = state.cartProducts.contains(item);
               return IconButton(
-                icon: Icon(inCart
-                    ? FlutterIcons.cart_remove_mco
-                    : FlutterIcons.cart_plus_mco),
+                icon: Icon(
+                  FlutterIcons.shopping_cart_ent,
+                  color: inCart ? Colors.amber[700] : Colors.white,
+                ),
                 onPressed: () {
                   StoreProvider.of<AppState>(context)
                       .dispatch(toggleCartProductAction(item));
