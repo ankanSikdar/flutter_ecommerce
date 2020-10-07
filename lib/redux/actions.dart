@@ -70,9 +70,42 @@ class GetProductsAction {
 
 /* Cart Product Actions */
 
+ThunkAction<AppState> getCartProductsAction = (Store<AppState> store) async {
+  final pref = await SharedPreferences.getInstance();
+  final userData = json.decode(pref.get('user'));
+  User storedUser = User.fromJson(userData);
+  if (storedUser == null) {
+    return;
+  }
+  http.Response response = await http
+      .get('http://192.168.1.5:1337/carts/${storedUser.cartId}', headers: {
+    'Authorization': 'Bearer ${storedUser.jwt}',
+  });
+
+  List<Product> cartProducts = [];
+  final responseData = json.decode(response.body)['products'];
+  responseData.forEach((productData) {
+    final Product product = Product.fromJson(productData);
+    cartProducts.add(product);
+  });
+
+  store.dispatch(GetCartProductsAction(cartProducts));
+};
+
+class GetCartProductsAction {
+  final List<Product> _cartProducts;
+
+  GetCartProductsAction(this._cartProducts);
+
+  List<Product> get cartProducts {
+    return _cartProducts;
+  }
+}
+
 ThunkAction<AppState> toggleCartProductAction(Product cartProduct) {
-  return (Store<AppState> store) {
+  return (Store<AppState> store) async {
     final List<Product> cartProducts = store.state.cartProducts;
+    final User user = store.state.user;
     final int index =
         cartProducts.indexWhere((element) => element.id == cartProduct.id);
     List<Product> updatedCart = List.from(cartProducts);
@@ -83,6 +116,21 @@ ThunkAction<AppState> toggleCartProductAction(Product cartProduct) {
       // Item in cart already
       updatedCart.removeAt(index);
     }
+
+    final List<String> cartProductIds = updatedCart.map((product) {
+      return product.id;
+    }).toList();
+
+    await http.put(
+      'http://192.168.1.5:1337/carts/${user.cartId}',
+      body: {
+        'products': json.encode(cartProductIds),
+      },
+      headers: {
+        'Authorization': 'Bearer ${user.jwt}',
+      },
+    );
+
     store.dispatch(ToggleCartProductAction(updatedCart));
   };
 }
