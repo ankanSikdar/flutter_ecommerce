@@ -14,6 +14,11 @@ class ProductDetailsPage extends StatelessWidget {
     final Product item = ModalRoute.of(context).settings.arguments;
     String url = 'http://192.168.1.5:1337${item.picture['url']}';
 
+    bool _isInCart(AppState state, String id) {
+      final List<Product> cartProducts = state.cartProducts;
+      return cartProducts.indexWhere((element) => element.id == id) > -1;
+    }
+
     return Scaffold(
       key: _scaffoldKey,
       appBar: AppBar(
@@ -57,7 +62,7 @@ class ProductDetailsPage extends StatelessWidget {
                   if (state.user == null) {
                     return Text('');
                   }
-                  bool inCart = state.cartProducts.contains(item);
+                  bool inCart = _isInCart(state, item.id);
                   return RaisedButton.icon(
                     color: Theme.of(context).accentColor,
                     label: Text(inCart ? 'Remove From Cart' : 'Add To Cart'),

@@ -11,6 +11,11 @@ class ProductItem extends StatelessWidget {
 
   ProductItem(this.item);
 
+  bool _isInCart(AppState state, String id) {
+    final List<Product> cartProducts = state.cartProducts;
+    return cartProducts.indexWhere((element) => element.id == id) > -1;
+  }
+
   @override
   Widget build(BuildContext context) {
     String url = 'http://192.168.1.5:1337${item.picture['url']}';
@@ -46,7 +51,7 @@ class ProductItem extends StatelessWidget {
               if (state.user == null) {
                 return Text('');
               }
-              bool inCart = state.cartProducts.contains(item);
+              bool inCart = _isInCart(state, item.id);
               return IconButton(
                 icon: Icon(
                   FlutterIcons.shopping_cart_ent,
