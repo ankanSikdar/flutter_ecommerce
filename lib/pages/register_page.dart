@@ -40,18 +40,43 @@ class _RegisterPageState extends State<RegisterPage> {
         'http://192.168.1.5:1337/auth/local/register',
         body: {'username': _username, 'email': _email, 'password': _password});
     final responseData = json.decode(response.body);
-    setState(() {
-      _isLoading = false;
-    });
     if (response.statusCode != 200) {
+      setState(() {
+        _isLoading = false;
+      });
       final errorMessage = responseData['message'][0]['messages'][0]['message'];
       _showErrorSnack(errorMessage);
     } else {
-      _storeUserData(responseData);
+      await _updateUserCart(responseData);
+      final updatedResponseData = await _logUserIn(responseData);
+      await _storeUserData(updatedResponseData);
+      setState(() {
+        _isLoading = false;
+      });
       _showSuccessSnack();
       _redirectUser();
-      print('Data: $responseData');
+      print('Data: $updatedResponseData');
     }
+  }
+
+  Future<void> _updateUserCart(Map responseData) async {
+    final cart = await http.post("http://192.168.1.5:1337/carts");
+    final cartData = json.decode(cart.body);
+    await http.put(
+      "http://192.168.1.5:1337/users/${responseData['user']['_id']}",
+      body: {
+        'cart_id': cartData['id'],
+      },
+      headers: {
+        'Authorization': 'Bearer ${responseData['jwt']}',
+      },
+    );
+  }
+
+  Future<Map> _logUserIn(Map responseData) async {
+    final response = await http.post('http://192.168.1.5:1337/auth/local',
+        body: {'identifier': _email, 'password': _password});
+    return json.decode(response.body);
   }
 
   Future<void> _storeUserData(Map responseData) async {

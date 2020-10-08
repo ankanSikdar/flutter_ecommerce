@@ -72,6 +72,9 @@ class GetProductsAction {
 
 ThunkAction<AppState> getCartProductsAction = (Store<AppState> store) async {
   final pref = await SharedPreferences.getInstance();
+  if (pref.get('user') == null) {
+    return;
+  }
   final userData = json.decode(pref.get('user'));
   User storedUser = User.fromJson(userData);
   if (storedUser == null) {

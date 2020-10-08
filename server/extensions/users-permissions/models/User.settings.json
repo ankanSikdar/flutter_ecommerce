@@ -59,6 +59,9 @@
     },
     "cart_id": {
       "type": "string"
+    },
+    "customer_id": {
+      "type": "string"
     }
   }
 }
