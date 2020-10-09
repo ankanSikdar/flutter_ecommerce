@@ -7,11 +7,13 @@ class AppState {
   final User user;
   final List<Product> products;
   final List<Product> cartProducts;
+  final List<dynamic> cards;
 
   AppState({
     @required this.user,
     @required this.products,
     @required this.cartProducts,
+    @required this.cards,
   });
 
   factory AppState.initial() {
@@ -19,6 +21,7 @@ class AppState {
       user: null,
       products: [],
       cartProducts: [],
+      cards: [],
     );
   }
 }
