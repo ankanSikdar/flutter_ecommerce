@@ -1,9 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_ecommerce/models/product.dart';
+import 'package:flutter_ecommerce/models/user.dart';
 
 @immutable
 class AppState {
-  final dynamic user;
+  final User user;
   final List<Product> products;
   final List<Product> cartProducts;
 

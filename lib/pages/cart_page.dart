@@ -7,11 +7,21 @@ import 'package:flutter_redux/flutter_redux.dart';
 class CartPage extends StatefulWidget {
   static const routeName = '/cart-page';
 
+  final Function onInit;
+
+  CartPage({this.onInit});
+
   @override
   _CartPageState createState() => _CartPageState();
 }
 
 class _CartPageState extends State<CartPage> {
+  @override
+  void initState() {
+    super.initState();
+    widget.onInit();
+  }
+
   cartTab() {
     return StoreConnector<AppState, AppState>(
       converter: (store) => store.state,
