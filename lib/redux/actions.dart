@@ -166,3 +166,13 @@ class GetCardsAction {
     return _cards;
   }
 }
+
+class AddCardAction {
+  final dynamic _card;
+
+  AddCardAction(this._card);
+
+  dynamic get card {
+    return _card;
+  }
+}

@@ -1,8 +1,13 @@
+import 'dart:convert';
+
 import 'package:flutter/material.dart';
 import 'package:flutter_ecommerce/models/app_state.dart';
 import 'package:flutter_ecommerce/widgets/product_item.dart';
 import 'package:flutter_icons/flutter_icons.dart';
 import 'package:flutter_redux/flutter_redux.dart';
+import 'package:stripe_payment/stripe_payment.dart';
+import 'package:http/http.dart' as http;
+import 'package:flutter_ecommerce/redux/actions.dart';
 
 class CartPage extends StatefulWidget {
   static const routeName = '/cart-page';
@@ -19,6 +24,12 @@ class _CartPageState extends State<CartPage> {
   @override
   void initState() {
     super.initState();
+    StripePayment.setOptions(
+      StripeOptions(
+        publishableKey: 'pk_test_rhkxUJ4HgppGdPqP7Jv5dF0G009XBKpw8r',
+        androidPayMode: 'test',
+      ),
+    );
     widget.onInit();
   }
 
@@ -64,7 +75,7 @@ class _CartPageState extends State<CartPage> {
     return StoreConnector<AppState, AppState>(
       converter: (store) => store.state,
       builder: (context, state) {
-        List<Widget> cardsList = state.cards.map((card) {
+        List<Widget> cardsList = state.cards.map((c) {
           return Column(
             children: [
               ListTile(
@@ -72,16 +83,17 @@ class _CartPageState extends State<CartPage> {
                 leading: Padding(
                   padding: const EdgeInsets.only(right: 20),
                   child: Icon(
-                    getCardIcon('${card['brand'].toString().toLowerCase()}'),
+                    getCardIcon(
+                        '${c['card']['brand'].toString().toLowerCase()}'),
                     size: 60,
                   ),
                 ),
                 title: Text(
-                  '*** *** ${card['last4']}',
+                  '*** *** ${c['card']['last4']}',
                   style: TextStyle(fontSize: 18),
                 ),
                 subtitle: Text(
-                  'Expiry: ${card['exp_month']}/${card['exp_year']}',
+                  'Expiry: ${c['card']['exp_month']}/${c['card']['exp_year']}',
                   style: TextStyle(fontSize: 15),
                 ),
                 trailing: FlatButton(
@@ -103,8 +115,49 @@ class _CartPageState extends State<CartPage> {
           );
         }).toList();
 
+        dynamic _addCard(String token) async {
+          // Udpdate user data to include card token
+          await http
+              .put('http://192.168.1.5:1337/users/${state.user.id}', body: {
+            'card_token': token,
+          }, headers: {
+            'Authorization': 'Bearer ${state.user.jwt}'
+          });
+
+          // Associate card token with stripe customer
+          http.Response response =
+              await http.post('http://192.168.1.5:1337/card/add', body: {
+            'source': token,
+            'customer': state.user.customerId,
+          });
+          final responseData = json.decode(response.body);
+          return responseData;
+        }
+
         return ListView(
-          children: cardsList,
+          children: [
+            Container(
+              margin: EdgeInsets.symmetric(horizontal: 40, vertical: 20),
+              child: RaisedButton(
+                onPressed: () async {
+                  try {
+                    final PaymentMethod response =
+                        await StripePayment.paymentRequestWithCardForm(
+                            CardFormPaymentRequest());
+                    final card = await _addCard(response.id);
+                    // Action to Add Card
+                    StoreProvider.of<AppState>(context)
+                        .dispatch(AddCardAction(card));
+                  } catch (error) {
+                    print('ERROR Adding Card $error');
+                  }
+                },
+                child: Text('Add Card'),
+                color: Theme.of(context).accentColor,
+              ),
+            ),
+            ...cardsList
+          ],
         );
       },
     );

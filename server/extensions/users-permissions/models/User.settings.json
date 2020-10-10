@@ -62,6 +62,9 @@
     },
     "customer_id": {
       "type": "string"
+    },
+    "card_token": {
+      "type": "string"
     }
   }
 }

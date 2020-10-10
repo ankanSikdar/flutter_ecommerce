@@ -44,6 +44,8 @@ List<Product> cartProducts(List<Product> cartProducts, dynamic action) {
 List<dynamic> cardsReducer(List<dynamic> cards, dynamic action) {
   if (action is GetCardsAction) {
     return action.cards;
+  } else if (action is AddCardAction) {
+    return List.from(cards)..add(action.card);
   }
   return cards;
 }
