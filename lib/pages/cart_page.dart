@@ -2,6 +2,7 @@ import 'dart:convert';
 
 import 'package:flutter/material.dart';
 import 'package:flutter_ecommerce/models/app_state.dart';
+import 'package:flutter_ecommerce/widgets/card_tile.dart';
 import 'package:flutter_ecommerce/widgets/product_item.dart';
 import 'package:flutter_icons/flutter_icons.dart';
 import 'package:flutter_redux/flutter_redux.dart';
@@ -83,41 +84,13 @@ class _CartPageState extends State<CartPage> {
           );
         }
         List<Widget> cardsList = state.cards.map((c) {
-          return Column(
-            children: [
-              ListTile(
-                leading: Padding(
-                  padding: const EdgeInsets.only(right: 20),
-                  child: Icon(
-                    getCardIcon(
-                        '${c['card']['brand'].toString().toLowerCase()}'),
-                    size: 60,
-                  ),
-                ),
-                title: Text(
-                  '*** *** ${c['card']['last4']}',
-                  style: TextStyle(fontSize: 18),
-                ),
-                subtitle: Text(
-                  'Expiry: ${c['card']['exp_month']}/${c['card']['exp_year']}',
-                  style: TextStyle(fontSize: 15),
-                ),
-                trailing: FlatButton(
-                  child: Text(
-                    'Set as Primary',
-                    style: TextStyle(
-                      fontWeight: FontWeight.bold,
-                      color: Colors.pink,
-                    ),
-                  ),
-                  onPressed: () {},
-                  shape: RoundedRectangleBorder(
-                    borderRadius: BorderRadius.circular(15),
-                  ),
-                ),
-              ),
-              Divider(),
-            ],
+          return CardTile(
+            iconData:
+                getCardIcon('${c['card']['brand'].toString().toLowerCase()}'),
+            last4: c['card']['last4'].toString(),
+            expMonth: c['card']['exp_month'].toString(),
+            expYear: c['card']['exp_year'].toString(),
+            onPressed: () {},
           );
         }).toList();
 
