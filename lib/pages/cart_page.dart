@@ -21,6 +21,8 @@ class CartPage extends StatefulWidget {
 }
 
 class _CartPageState extends State<CartPage> {
+  final _scaffoldKey = GlobalKey<ScaffoldState>();
+
   @override
   void initState() {
     super.initState();
@@ -75,11 +77,15 @@ class _CartPageState extends State<CartPage> {
     return StoreConnector<AppState, AppState>(
       converter: (store) => store.state,
       builder: (context, state) {
+        if (state.cards.length == 0) {
+          return Center(
+            child: Text('No Cards Added'),
+          );
+        }
         List<Widget> cardsList = state.cards.map((c) {
           return Column(
             children: [
               ListTile(
-                // leading: Text('${card['brand'].toString().toLowerCase()}'),
                 leading: Padding(
                   padding: const EdgeInsets.only(right: 20),
                   child: Icon(
@@ -148,6 +154,18 @@ class _CartPageState extends State<CartPage> {
                     // Action to Add Card
                     StoreProvider.of<AppState>(context)
                         .dispatch(AddCardAction(card));
+                    // Action to Update Card Token
+                    StoreProvider.of<AppState>(context)
+                        .dispatch(UpdateCardTokenAction(card['id']));
+                    // Show Snackbar
+                    SnackBar snackBar = SnackBar(
+                      content: Text(
+                        'Card Added Successfully',
+                        style: TextStyle(color: Colors.green),
+                      ),
+                      backgroundColor: Theme.of(context).primaryColorDark,
+                    );
+                    _scaffoldKey.currentState.showSnackBar(snackBar);
                   } catch (error) {
                     print('ERROR Adding Card $error');
                   }
@@ -172,6 +190,7 @@ class _CartPageState extends State<CartPage> {
     return DefaultTabController(
       length: 3,
       child: Scaffold(
+        key: _scaffoldKey,
         appBar: AppBar(
           title: Text('Carts Page'),
           centerTitle: true,

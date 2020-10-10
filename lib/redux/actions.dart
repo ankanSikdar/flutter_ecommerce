@@ -176,3 +176,13 @@ class AddCardAction {
     return _card;
   }
 }
+
+class UpdateCardTokenAction {
+  final String _cardToken;
+
+  UpdateCardTokenAction(this._cardToken);
+
+  dynamic get cardToken {
+    return _cardToken;
+  }
+}
