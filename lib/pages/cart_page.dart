@@ -54,161 +54,154 @@ class _CartPageState extends State<CartPage> {
     }
   }
 
-  cartTab() {
-    return StoreConnector<AppState, AppState>(
-      converter: (store) => store.state,
-      builder: (context, state) {
-        return GridView.builder(
-          gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
-            crossAxisCount: 2,
-            childAspectRatio: 1,
-            crossAxisSpacing: 5,
-            mainAxisSpacing: 5,
-          ),
-          itemBuilder: (context, index) {
-            return ProductItem(state.cartProducts[index]);
-          },
-          itemCount: state.cartProducts.length,
-        );
+  cartTab(AppState state) {
+    return GridView.builder(
+      gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
+        crossAxisCount: 2,
+        childAspectRatio: 1,
+        crossAxisSpacing: 5,
+        mainAxisSpacing: 5,
+      ),
+      itemBuilder: (context, index) {
+        return ProductItem(state.cartProducts[index]);
       },
+      itemCount: state.cartProducts.length,
     );
   }
 
-  cardsTab() {
-    return StoreConnector<AppState, AppState>(
-      converter: (store) => store.state,
-      builder: (context, state) {
-        if (state.cards.length == 0) {
-          return Center(
-            child: Text('No Cards Added'),
-          );
-        }
-        List<Widget> cardsList = state.cards.map((c) {
-          return CardTile(
-            iconData:
-                getCardIcon('${c['card']['brand'].toString().toLowerCase()}'),
-            last4: c['card']['last4'].toString(),
-            expMonth: c['card']['exp_month'].toString(),
-            expYear: c['card']['exp_year'].toString(),
-            trailingButton: c['id'] != state.cardToken
-                ? FlatButton(
-                    child: Text(
-                      'Set as Primary',
-                      style: TextStyle(
-                        fontWeight: FontWeight.bold,
-                        color: Colors.pink,
-                      ),
-                    ),
-                    onPressed: () {
-                      StoreProvider.of<AppState>(context)
-                          .dispatch(updateCardTokenAction(c['id']));
-                    },
-                    shape: RoundedRectangleBorder(
-                      borderRadius: BorderRadius.circular(15),
-                    ),
-                  )
-                : Chip(
-                    label: Text('Primary'),
-                    avatar: CircleAvatar(
-                      child: Icon(
-                        FlutterIcons.check_circle_faw,
-                        color: Colors.white,
-                      ),
-                      backgroundColor: Colors.green,
-                    ),
+  cardsTab(AppState state) {
+    if (state.cards.length == 0) {
+      return Center(
+        child: Text('No Cards Added'),
+      );
+    }
+    List<Widget> cardsList = state.cards.map((c) {
+      return CardTile(
+        iconData: getCardIcon('${c['card']['brand'].toString().toLowerCase()}'),
+        last4: c['card']['last4'].toString(),
+        expMonth: c['card']['exp_month'].toString(),
+        expYear: c['card']['exp_year'].toString(),
+        trailingButton: c['id'] != state.cardToken
+            ? FlatButton(
+                child: Text(
+                  'Set as Primary',
+                  style: TextStyle(
+                    fontWeight: FontWeight.bold,
+                    color: Colors.pink,
                   ),
-          );
-        }).toList();
-
-        dynamic _addCard(String token) async {
-          // Udpdate user data to include card token
-          await http
-              .put('http://192.168.1.5:1337/users/${state.user.id}', body: {
-            'card_token': token,
-          }, headers: {
-            'Authorization': 'Bearer ${state.user.jwt}'
-          });
-
-          // Associate card token with stripe customer
-          http.Response response =
-              await http.post('http://192.168.1.5:1337/card/add', body: {
-            'source': token,
-            'customer': state.user.customerId,
-          });
-          final responseData = json.decode(response.body);
-          return responseData;
-        }
-
-        return ListView(
-          children: [
-            Container(
-              margin: EdgeInsets.symmetric(horizontal: 40, vertical: 20),
-              child: RaisedButton(
-                onPressed: () async {
-                  try {
-                    final PaymentMethod response =
-                        await StripePayment.paymentRequestWithCardForm(
-                            CardFormPaymentRequest());
-                    final card = await _addCard(response.id);
-                    // Action to Add Card
-                    StoreProvider.of<AppState>(context)
-                        .dispatch(AddCardAction(card));
-                    // Action to Update Card Token
-                    StoreProvider.of<AppState>(context)
-                        .dispatch(UpdateCardTokenAction(card['id']));
-                    // Show Snackbar
-                    SnackBar snackBar = SnackBar(
-                      content: Text(
-                        'Card Added Successfully',
-                        style: TextStyle(color: Colors.green),
-                      ),
-                      backgroundColor: Theme.of(context).primaryColorDark,
-                    );
-                    _scaffoldKey.currentState.showSnackBar(snackBar);
-                  } catch (error) {
-                    print('ERROR Adding Card $error');
-                  }
+                ),
+                onPressed: () {
+                  StoreProvider.of<AppState>(context)
+                      .dispatch(updateCardTokenAction(c['id']));
                 },
-                child: Text('Add Card'),
-                color: Theme.of(context).accentColor,
+                shape: RoundedRectangleBorder(
+                  borderRadius: BorderRadius.circular(15),
+                ),
+              )
+            : Chip(
+                label: Text('Primary'),
+                avatar: CircleAvatar(
+                  child: Icon(
+                    FlutterIcons.check_circle_faw,
+                    color: Colors.white,
+                  ),
+                  backgroundColor: Colors.green,
+                ),
               ),
-            ),
-            ...cardsList
-          ],
-        );
-      },
+      );
+    }).toList();
+
+    dynamic _addCard(String token) async {
+      // Udpdate user data to include card token
+      await http.put('http://192.168.1.5:1337/users/${state.user.id}', body: {
+        'card_token': token,
+      }, headers: {
+        'Authorization': 'Bearer ${state.user.jwt}'
+      });
+
+      // Associate card token with stripe customer
+      http.Response response =
+          await http.post('http://192.168.1.5:1337/card/add', body: {
+        'source': token,
+        'customer': state.user.customerId,
+      });
+      final responseData = json.decode(response.body);
+      return responseData;
+    }
+
+    return ListView(
+      children: [
+        Container(
+          margin: EdgeInsets.symmetric(horizontal: 40, vertical: 20),
+          child: RaisedButton(
+            onPressed: () async {
+              try {
+                final PaymentMethod response =
+                    await StripePayment.paymentRequestWithCardForm(
+                        CardFormPaymentRequest());
+                final card = await _addCard(response.id);
+                // Action to Add Card
+                StoreProvider.of<AppState>(context)
+                    .dispatch(AddCardAction(card));
+                // Action to Update Card Token
+                StoreProvider.of<AppState>(context)
+                    .dispatch(UpdateCardTokenAction(card['id']));
+                // Show Snackbar
+                SnackBar snackBar = SnackBar(
+                  content: Text(
+                    'Card Added Successfully',
+                    style: TextStyle(color: Colors.green),
+                  ),
+                  backgroundColor: Theme.of(context).primaryColorDark,
+                );
+                _scaffoldKey.currentState.showSnackBar(snackBar);
+              } catch (error) {
+                print('ERROR Adding Card $error');
+              }
+            },
+            child: Text('Add Card'),
+            color: Theme.of(context).accentColor,
+          ),
+        ),
+        ...cardsList
+      ],
     );
   }
 
-  ordersTab() {
+  ordersTab(AppState state) {
     return Text('orders');
   }
 
   @override
   Widget build(BuildContext context) {
-    return DefaultTabController(
-      length: 3,
-      child: Scaffold(
-        key: _scaffoldKey,
-        appBar: AppBar(
-          title: Text('Carts Page'),
-          centerTitle: true,
-          bottom: TabBar(
-            tabs: [
-              Tab(icon: Icon(FlutterIcons.shopping_cart_ent)),
-              Tab(icon: Icon(FlutterIcons.credit_card_ent)),
-              Tab(icon: Icon(FlutterIcons.receipt_mdi)),
-            ],
+    return StoreConnector<AppState, AppState>(
+      converter: (store) => store.state,
+      builder: (context, state) {
+        return DefaultTabController(
+          length: 3,
+          child: Scaffold(
+            key: _scaffoldKey,
+            appBar: AppBar(
+              title: Text('Carts Page'),
+              centerTitle: true,
+              bottom: TabBar(
+                tabs: [
+                  Tab(icon: Icon(FlutterIcons.shopping_cart_ent)),
+                  Tab(icon: Icon(FlutterIcons.credit_card_ent)),
+                  Tab(icon: Icon(FlutterIcons.receipt_mdi)),
+                ],
+              ),
+            ),
+            body: TabBarView(
+              children: [
+                cartTab(state),
+                cardsTab(state),
+                ordersTab(state),
+              ],
+            ),
           ),
-        ),
-        body: TabBarView(
-          children: [
-            cartTab(),
-            cardsTab(),
-            ordersTab(),
-          ],
-        ),
-      ),
+        );
+      },
     );
   }
 }
