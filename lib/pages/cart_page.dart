@@ -172,6 +172,98 @@ class _CartPageState extends State<CartPage> {
     return Text('orders');
   }
 
+  String calculateTotalPrice(cartProducts) {
+    double totalPrice = 0.0;
+    cartProducts.forEach((product) {
+      totalPrice += product.price;
+    });
+    return totalPrice.toStringAsFixed(2);
+  }
+
+  Future _showCheckoutDialog(AppState state) {
+    return showDialog(
+      context: context,
+      builder: (context) {
+        if (state.cards.length < 1) {
+          return AlertDialog(
+            title: Text('No Credit Card Found'),
+            content: SingleChildScrollView(
+              child: Text(
+                  'Add a credit card to your account before checking out',
+                  style: Theme.of(context).textTheme.bodyText2),
+            ),
+          );
+        }
+
+        String cartSummary = '';
+        state.cartProducts.forEach((element) {
+          cartSummary += '• ${element.name}, ₹${element.price}\n';
+        });
+        final primaryCard = state.cards
+            .singleWhere((card) => card['id'] == state.cardToken)['card'];
+        return AlertDialog(
+          title: Text('Checkout'),
+          content: SingleChildScrollView(
+            child: ListBody(
+              children: [
+                Text(
+                  'CART ITEMS (${state.cartProducts.length})',
+                  style: Theme.of(context).textTheme.bodyText2,
+                ),
+                Text(
+                  '$cartSummary',
+                  style: Theme.of(context).textTheme.bodyText2,
+                ),
+                Text(
+                  'CARD DETAILS',
+                  style: Theme.of(context).textTheme.bodyText2,
+                ),
+                Text(
+                  'Brand: ${primaryCard['brand']}',
+                  style: Theme.of(context).textTheme.bodyText2,
+                ),
+                Text(
+                  'Card Number: ${primaryCard['last4']}',
+                  style: Theme.of(context).textTheme.bodyText2,
+                ),
+                Text(
+                  'Expires On: ${primaryCard['exp_month']}/${primaryCard['exp_year']}',
+                  style: Theme.of(context).textTheme.bodyText2,
+                ),
+                Text(
+                  'Total Price: ₹${calculateTotalPrice(state.cartProducts)}',
+                  style: Theme.of(context).textTheme.bodyText2,
+                ),
+              ],
+            ),
+          ),
+          actions: [
+            FlatButton(
+                onPressed: () {
+                  Navigator.of(context).pop(false);
+                },
+                child: Text(
+                  'Cancel',
+                  style: TextStyle(color: Theme.of(context).errorColor),
+                )),
+            RaisedButton(
+              onPressed: () {
+                Navigator.of(context).pop(true);
+              },
+              color: Colors.green,
+              child: Text(
+                'Confirm',
+                style: TextStyle(color: Colors.white),
+              ),
+            ),
+          ],
+        );
+      },
+    ).then((value) {
+      print('Checkout: $value');
+    });
+  }
+
   @override
   Widget build(BuildContext context) {
     return StoreConnector<AppState, AppState>(
@@ -182,7 +274,8 @@ class _CartPageState extends State<CartPage> {
           child: Scaffold(
             key: _scaffoldKey,
             appBar: AppBar(
-              title: Text('Carts Page'),
+              title: Text(
+                  'Items: ${state.cartProducts.length}, Price: ₹${calculateTotalPrice(state.cartProducts)}'),
               centerTitle: true,
               bottom: TabBar(
                 tabs: [
@@ -192,6 +285,17 @@ class _CartPageState extends State<CartPage> {
                 ],
               ),
             ),
+            floatingActionButton: state.cartProducts.length > 0
+                ? FloatingActionButton.extended(
+                    onPressed: () {
+                      _showCheckoutDialog(state);
+                    },
+                    label: Text('Checkout',
+                        style: TextStyle(fontWeight: FontWeight.bold)),
+                    icon: Icon(FlutterIcons.local_atm_mdi),
+                    backgroundColor: Colors.green,
+                  )
+                : Text(''),
             body: TabBarView(
               children: [
                 cartTab(state),
