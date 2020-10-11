@@ -90,7 +90,33 @@ class _CartPageState extends State<CartPage> {
             last4: c['card']['last4'].toString(),
             expMonth: c['card']['exp_month'].toString(),
             expYear: c['card']['exp_year'].toString(),
-            onPressed: () {},
+            trailingButton: c['id'] != state.cardToken
+                ? FlatButton(
+                    child: Text(
+                      'Set as Primary',
+                      style: TextStyle(
+                        fontWeight: FontWeight.bold,
+                        color: Colors.pink,
+                      ),
+                    ),
+                    onPressed: () {
+                      StoreProvider.of<AppState>(context)
+                          .dispatch(updateCardTokenAction(c['id']));
+                    },
+                    shape: RoundedRectangleBorder(
+                      borderRadius: BorderRadius.circular(15),
+                    ),
+                  )
+                : Chip(
+                    label: Text('Primary'),
+                    avatar: CircleAvatar(
+                      child: Icon(
+                        FlutterIcons.check_circle_faw,
+                        color: Colors.white,
+                      ),
+                      backgroundColor: Colors.green,
+                    ),
+                  ),
           );
         }).toList();
 

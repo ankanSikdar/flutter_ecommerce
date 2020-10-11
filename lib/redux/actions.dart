@@ -177,6 +177,44 @@ class AddCardAction {
   }
 }
 
+ThunkAction<AppState> getCardTokenAction = (Store<AppState> store) async {
+  final String jwt = store.state.user.jwt;
+  final response = await http.get('http://192.168.1.5:1337/users/me', headers: {
+    'Authorization': 'Bearer $jwt',
+  });
+  final responseData = json.decode(response.body);
+  final String cardToken = responseData['card_token'];
+  store.dispatch(GetCardTokenAction(cardToken));
+};
+
+class GetCardTokenAction {
+  final String _cardToken;
+
+  GetCardTokenAction(this._cardToken);
+
+  String get cardToken {
+    return _cardToken;
+  }
+}
+
+ThunkAction<AppState> updateCardTokenAction(String cardToken) {
+  final token = cardToken;
+  return (Store<AppState> store) async {
+    final String jwt = store.state.user.jwt;
+    final String id = store.state.user.id;
+    await http.put(
+      "http://192.168.1.5:1337/users/$id",
+      body: {
+        'card_token': token,
+      },
+      headers: {
+        'Authorization': 'Bearer $jwt',
+      },
+    );
+    store.dispatch(UpdateCardTokenAction(cardToken));
+  };
+}
+
 class UpdateCardTokenAction {
   final String _cardToken;
 

@@ -5,14 +5,14 @@ class CardTile extends StatelessWidget {
   final String last4;
   final String expMonth;
   final String expYear;
-  final Function onPressed;
+  final Widget trailingButton;
 
   CardTile({
     this.iconData,
     this.last4,
     this.expMonth,
     this.expYear,
-    this.onPressed,
+    this.trailingButton,
   });
 
   @override
@@ -35,19 +35,7 @@ class CardTile extends StatelessWidget {
             'Expiry: $expMonth/$expYear',
             style: TextStyle(fontSize: 15),
           ),
-          trailing: FlatButton(
-            child: Text(
-              'Set as Primary',
-              style: TextStyle(
-                fontWeight: FontWeight.bold,
-                color: Colors.pink,
-              ),
-            ),
-            onPressed: onPressed,
-            shape: RoundedRectangleBorder(
-              borderRadius: BorderRadius.circular(15),
-            ),
-          ),
+          trailing: trailingButton,
         ),
         Divider(),
       ],
