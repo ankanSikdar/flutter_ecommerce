@@ -9,6 +9,7 @@ import 'package:flutter_redux/flutter_redux.dart';
 import 'package:stripe_payment/stripe_payment.dart';
 import 'package:http/http.dart' as http;
 import 'package:flutter_ecommerce/redux/actions.dart';
+import 'package:modal_progress_hud/modal_progress_hud.dart';
 
 class CartPage extends StatefulWidget {
   static const routeName = '/cart-page';
@@ -23,6 +24,7 @@ class CartPage extends StatefulWidget {
 
 class _CartPageState extends State<CartPage> {
   final _scaffoldKey = GlobalKey<ScaffoldState>();
+  bool _isSubmitting = false;
 
   @override
   void initState() {
@@ -259,8 +261,40 @@ class _CartPageState extends State<CartPage> {
           ],
         );
       },
-    ).then((value) {
-      print('Checkout: $value');
+    ).then((value) async {
+      _checkOutCardProducts() async {
+        // Create a new order in Stapi
+        final response =
+            await http.post('http://192.168.1.5:1337/orders', body: {
+          'amount': calculateTotalPrice(state.cartProducts),
+          'products': json.encode(state.cartProducts),
+          'source': state.cardToken,
+          'customer': state.user.customerId,
+        }, headers: {
+          'Authorization': 'Bearer ${state.user.jwt}',
+        });
+        final responseData = json.decode(response.body);
+        print(responseData);
+        return responseData;
+      }
+
+      if (value == true) {
+        // Show Loading Spinner
+        setState(() {
+          _isSubmitting = true;
+        });
+        // Checkout Cart Products (Create new order data in Strapi & charge card with Stripe)
+        await _checkOutCardProducts();
+        // Create order instance
+
+        // Pass order instance to a new action (AddOrderAction)
+
+        // Hide Loading Spinner
+        setState(() {
+          _isSubmitting = false;
+        });
+        // Show success dialog
+      }
     });
   }
 
@@ -269,39 +303,42 @@ class _CartPageState extends State<CartPage> {
     return StoreConnector<AppState, AppState>(
       converter: (store) => store.state,
       builder: (context, state) {
-        return DefaultTabController(
-          length: 3,
-          child: Scaffold(
-            key: _scaffoldKey,
-            appBar: AppBar(
-              title: Text(
-                  'Items: ${state.cartProducts.length}, Price: ₹${calculateTotalPrice(state.cartProducts)}'),
-              centerTitle: true,
-              bottom: TabBar(
-                tabs: [
-                  Tab(icon: Icon(FlutterIcons.shopping_cart_ent)),
-                  Tab(icon: Icon(FlutterIcons.credit_card_ent)),
-                  Tab(icon: Icon(FlutterIcons.receipt_mdi)),
+        return ModalProgressHUD(
+          inAsyncCall: _isSubmitting,
+          child: DefaultTabController(
+            length: 3,
+            child: Scaffold(
+              key: _scaffoldKey,
+              appBar: AppBar(
+                title: Text(
+                    'Items: ${state.cartProducts.length}, Price: ₹${calculateTotalPrice(state.cartProducts)}'),
+                centerTitle: true,
+                bottom: TabBar(
+                  tabs: [
+                    Tab(icon: Icon(FlutterIcons.shopping_cart_ent)),
+                    Tab(icon: Icon(FlutterIcons.credit_card_ent)),
+                    Tab(icon: Icon(FlutterIcons.receipt_mdi)),
+                  ],
+                ),
+              ),
+              floatingActionButton: state.cartProducts.length > 0
+                  ? FloatingActionButton.extended(
+                      onPressed: () {
+                        _showCheckoutDialog(state);
+                      },
+                      label: Text('Checkout',
+                          style: TextStyle(fontWeight: FontWeight.bold)),
+                      icon: Icon(FlutterIcons.local_atm_mdi),
+                      backgroundColor: Colors.green,
+                    )
+                  : Text(''),
+              body: TabBarView(
+                children: [
+                  cartTab(state),
+                  cardsTab(state),
+                  ordersTab(state),
                 ],
               ),
-            ),
-            floatingActionButton: state.cartProducts.length > 0
-                ? FloatingActionButton.extended(
-                    onPressed: () {
-                      _showCheckoutDialog(state);
-                    },
-                    label: Text('Checkout',
-                        style: TextStyle(fontWeight: FontWeight.bold)),
-                    icon: Icon(FlutterIcons.local_atm_mdi),
-                    backgroundColor: Colors.green,
-                  )
-                : Text(''),
-            body: TabBarView(
-              children: [
-                cartTab(state),
-                cardsTab(state),
-                ordersTab(state),
-              ],
             ),
           ),
         );
