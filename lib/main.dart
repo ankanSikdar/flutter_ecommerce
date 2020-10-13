@@ -68,6 +68,7 @@ class MyApp extends StatelessWidget {
                   StoreProvider.of<AppState>(context).dispatch(getCardsAction);
                   StoreProvider.of<AppState>(context)
                       .dispatch(getCardTokenAction);
+                  StoreProvider.of<AppState>(context).dispatch(getOrdersAction);
                 },
               ),
         },

@@ -253,6 +253,32 @@ class UpdateCardTokenAction {
 
 /* Order Actions */
 
+ThunkAction<AppState> getOrdersAction = (Store<AppState> store) async {
+  final User user = store.state.user;
+  final response =
+      await http.get('http://192.168.1.5:1337/users/${user.id}', headers: {
+    'Authorization': 'Bearer ${user.jwt}',
+  });
+  final responseData = json.decode(response.body);
+  List<Order> orders = [];
+  print(responseData['orders']);
+  responseData['orders'].forEach((orderData) {
+    Order order = Order.fromJson(orderData);
+    orders.add(order);
+  });
+  store.dispatch(GetOrdersAction(orders));
+};
+
+class GetOrdersAction {
+  final List<Order> _orders;
+
+  GetOrdersAction(this._orders);
+
+  List<Order> get orders {
+    return _orders;
+  }
+}
+
 class AddOrderAction {
   final Order _order;
 
