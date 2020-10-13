@@ -314,6 +314,8 @@ class _CartPageState extends State<CartPage> {
         Order newOrder = Order.fromJson(newOrderData);
         // Pass order instance to a new action (AddOrderAction)
         StoreProvider.of<AppState>(context).dispatch(AddOrderAction(newOrder));
+        // Clear out our cartProducts
+        StoreProvider.of<AppState>(context).dispatch(clearCartProductsAction);
         // Hide Loading Spinner
         setState(() {
           _isSubmitting = false;

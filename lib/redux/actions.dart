@@ -149,6 +149,31 @@ class ToggleCartProductAction {
   }
 }
 
+ThunkAction<AppState> clearCartProductsAction = (Store<AppState> store) async {
+  final User user = store.state.user;
+  await http.put(
+    'http://192.168.1.5:1337/carts/${user.cartId}',
+    body: {
+      'products': json.encode([]),
+    },
+    headers: {
+      'Authorization': 'Bearer ${user.jwt}',
+    },
+  );
+
+  store.dispatch(ClearCartProductsAction(List(0)));
+};
+
+class ClearCartProductsAction {
+  final List<Product> _cartProducts;
+
+  ClearCartProductsAction(this._cartProducts);
+
+  List<Product> get cartProducts {
+    return _cartProducts;
+  }
+}
+
 /* Card Actions */
 ThunkAction<AppState> getCardsAction = (Store<AppState> store) async {
   final String customerId = store.state.user.customerId;
