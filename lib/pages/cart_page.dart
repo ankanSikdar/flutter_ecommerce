@@ -11,6 +11,7 @@ import 'package:stripe_payment/stripe_payment.dart';
 import 'package:http/http.dart' as http;
 import 'package:flutter_ecommerce/redux/actions.dart';
 import 'package:modal_progress_hud/modal_progress_hud.dart';
+import 'package:intl/intl.dart';
 
 class CartPage extends StatefulWidget {
   static const routeName = '/cart-page';
@@ -179,7 +180,6 @@ class _CartPageState extends State<CartPage> {
     }
     return ListView.builder(
       itemBuilder: (context, index) {
-        final date = DateTime.parse(state.orders[index].createdAt);
         return ListTile(
           title: Text('₹ ${state.orders[index].amount}'),
           leading: CircleAvatar(
@@ -190,7 +190,8 @@ class _CartPageState extends State<CartPage> {
             ),
           ),
           subtitle: Text(
-            '${date.toString()}',
+            DateFormat('MMM dd, yyyy - kk:mm')
+                .format(state.orders[index].createdAt),
             style: TextStyle(fontSize: 14),
           ),
         );
