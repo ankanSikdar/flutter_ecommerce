@@ -27,10 +27,10 @@ module.exports = {
       });
       console.log("PAYMENT: ", paymentIntent);
 
-      ctx.send({
-        amount: amount,
-        created: Date.now(),
+      return strapi.services.order.create({
+        amount,
         products: JSON.parse(products),
+        user: ctx.state.user,
       });
     } catch (error) {
       console.log("ERROR ", error);

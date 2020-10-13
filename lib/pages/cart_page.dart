@@ -2,6 +2,7 @@ import 'dart:convert';
 
 import 'package:flutter/material.dart';
 import 'package:flutter_ecommerce/models/app_state.dart';
+import 'package:flutter_ecommerce/models/order.dart';
 import 'package:flutter_ecommerce/widgets/card_tile.dart';
 import 'package:flutter_ecommerce/widgets/product_item.dart';
 import 'package:flutter_icons/flutter_icons.dart';
@@ -171,7 +172,31 @@ class _CartPageState extends State<CartPage> {
   }
 
   ordersTab(AppState state) {
-    return Text('orders');
+    if (state.orders.length < 1) {
+      return Center(
+        child: Text('No Orders Placed Yet!'),
+      );
+    }
+    return ListView.builder(
+      itemBuilder: (context, index) {
+        final date = DateTime.parse(state.orders[index].createdAt);
+        return ListTile(
+          title: Text('₹ ${state.orders[index].amount}'),
+          leading: CircleAvatar(
+            backgroundColor: Colors.green,
+            child: Icon(
+              Icons.local_shipping,
+              color: Colors.white,
+            ),
+          ),
+          subtitle: Text(
+            '${date.toString()}',
+            style: TextStyle(fontSize: 14),
+          ),
+        );
+      },
+      itemCount: state.orders.length,
+    );
   }
 
   String calculateTotalPrice(cartProducts) {
@@ -284,11 +309,11 @@ class _CartPageState extends State<CartPage> {
           _isSubmitting = true;
         });
         // Checkout Cart Products (Create new order data in Strapi & charge card with Stripe)
-        await _checkOutCardProducts();
+        final newOrderData = await _checkOutCardProducts();
         // Create order instance
-
+        Order newOrder = Order.fromJson(newOrderData);
         // Pass order instance to a new action (AddOrderAction)
-
+        StoreProvider.of<AppState>(context).dispatch(AddOrderAction(newOrder));
         // Hide Loading Spinner
         setState(() {
           _isSubmitting = false;

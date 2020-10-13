@@ -1,6 +1,7 @@
 import 'dart:convert';
 
 import 'package:flutter_ecommerce/models/app_state.dart';
+import 'package:flutter_ecommerce/models/order.dart';
 import 'package:flutter_ecommerce/models/product.dart';
 import 'package:flutter_ecommerce/models/user.dart';
 import 'package:redux/redux.dart';
@@ -222,5 +223,17 @@ class UpdateCardTokenAction {
 
   dynamic get cardToken {
     return _cardToken;
+  }
+}
+
+/* Order Actions */
+
+class AddOrderAction {
+  final Order _order;
+
+  AddOrderAction(this._order);
+
+  Order get order {
+    return _order;
   }
 }
