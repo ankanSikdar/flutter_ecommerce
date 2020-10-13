@@ -321,8 +321,33 @@ class _CartPageState extends State<CartPage> {
           _isSubmitting = false;
         });
         // Show success dialog
+        _showSuccessDialog();
       }
     });
+  }
+
+  Future _showSuccessDialog() {
+    return showDialog(
+      context: context,
+      builder: (context) {
+        return SimpleDialog(
+          title: Text('Congratulations!',
+              style: TextStyle(
+                fontSize: 24,
+                fontWeight: FontWeight.bold,
+              )),
+          children: [
+            Padding(
+              padding: EdgeInsets.all(20),
+              child: Text(
+                'Order Placed Successfully.\nCheck your email for the receipt of your purchase. \n\nOrder Summary will appear in the orders tab.\nThank You :)',
+                style: Theme.of(context).textTheme.bodyText2,
+              ),
+            )
+          ],
+        );
+      },
+    );
   }
 
   @override
