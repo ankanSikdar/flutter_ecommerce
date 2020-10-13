@@ -261,7 +261,6 @@ ThunkAction<AppState> getOrdersAction = (Store<AppState> store) async {
   });
   final responseData = json.decode(response.body);
   List<Order> orders = [];
-  print(responseData['orders']);
   responseData['orders'].forEach((orderData) {
     Order order = Order.fromJson(orderData);
     orders.add(order);

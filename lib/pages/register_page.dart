@@ -55,7 +55,6 @@ class _RegisterPageState extends State<RegisterPage> {
       });
       _showSuccessSnack();
       _redirectUser();
-      print('Data: $updatedResponseData');
     }
   }
 

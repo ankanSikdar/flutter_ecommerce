@@ -50,7 +50,6 @@ class _LoginPageState extends State<LoginPage> {
       final username = responseData['user']['username'];
       _showSuccessSnack(username);
       _redirectUser();
-      print('Data: $responseData');
     }
   }
 

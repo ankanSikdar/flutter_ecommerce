@@ -74,11 +74,6 @@ class _CartPageState extends State<CartPage> {
   }
 
   cardsTab(AppState state) {
-    if (state.cards.length == 0) {
-      return Center(
-        child: Text('No Cards Added'),
-      );
-    }
     List<Widget> cardsList = state.cards.map((c) {
       return CardTile(
         iconData: getCardIcon('${c['card']['brand'].toString().toLowerCase()}'),
@@ -300,7 +295,6 @@ class _CartPageState extends State<CartPage> {
           'Authorization': 'Bearer ${state.user.jwt}',
         });
         final responseData = json.decode(response.body);
-        print(responseData);
         return responseData;
       }
 
